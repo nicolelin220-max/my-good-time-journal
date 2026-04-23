@@ -41,11 +41,12 @@ st.markdown("""
 # --- 2. 建立 Google Sheets 雲端連線 ---
 conn = st.connection("gsheets", type=GSheetsConnection)
 
-# 讀取現有資料 (ttl=0 確保每次都抓取最新狀態)
+# 讀取現有資料
 try:
+    # 直接使用預設連線，不需額外參數，因為網址已經寫在 Secrets 裡了
     existing_data = conn.read(ttl=0)
-except Exception:
-    # 若讀取失敗（例如第一次執行），建立空表格
+except Exception as e:
+    st.error(f"連線失敗，請檢查 Secrets 設定。錯誤訊息: {e}")
     existing_data = pd.DataFrame(columns=["Date", "Activity", "Flow", "Energy", "Insights"])
 
 # --- 3. 標題區塊 ---
